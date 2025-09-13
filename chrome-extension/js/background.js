@@ -2,7 +2,7 @@ async function getApiConfig() {
   const result = await chrome.storage.sync.get(['geminiApiKey', 'geminiApiUrl']);
   return {
     apiKey: result.geminiApiKey,
-    apiUrl: result.geminiApiUrl || 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent'
+    apiUrl: result.geminiApiUrl || 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
   };
 }
 

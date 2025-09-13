@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         apiUrlInput.value = result.geminiApiUrl;
     } else {
         // Set default URL if not set
-        apiUrlInput.value = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
+        apiUrlInput.value = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
     }
     
     if (result.geminiApiKey && result.geminiApiUrl) {
