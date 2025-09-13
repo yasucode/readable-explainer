@@ -1,6 +1,25 @@
 let explainerModal = null;
 let isSelecting = false;
 
+function formatExplanation(text) {
+  // Format the explanation text with better structure
+  let formatted = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #1a73e8;">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '</p><p style="margin: 10px 0;">')
+    .replace(/\n/g, '<br>');
+  
+  // Wrap in paragraph tags
+  if (!formatted.startsWith('<')) {
+    formatted = '<p style="margin: 10px 0;">' + formatted + '</p>';
+  }
+  
+  // Format numbered lists
+  formatted = formatted.replace(/(\d+\.\s)/g, '<br><strong style="color: #34a853;">$1</strong>');
+  
+  return formatted;
+}
+
 function createExplainerButton() {
   const button = document.createElement('button');
   button.id = 'readable-explainer-btn';
@@ -125,24 +144,41 @@ async function handleExplainRequest() {
   
   hideButton();
   
+  // Get page title and URL for context
+  const pageTitle = document.title;
+  const pageUrl = window.location.href;
+  
   const contentDiv = document.getElementById('readable-explainer-content');
   showModal('<div style="text-align: center;">解説を生成中...</div>');
   
   try {
     const response = await chrome.runtime.sendMessage({
       action: 'explainText',
-      text: selectedText
+      text: selectedText,
+      context: {
+        title: pageTitle,
+        url: pageUrl
+      }
     });
     
     if (response.success) {
+      // Format the explanation with better styling
+      const formattedExplanation = formatExplanation(response.explanation);
+      
       contentDiv.innerHTML = `
-        <h3>選択されたテキスト:</h3>
-        <p style="background: #f5f5f5; padding: 10px; border-radius: 4px; margin: 10px 0;">${selectedText}</p>
-        <h3>解説:</h3>
-        <div>${response.explanation.replace(/\n/g, '<br>')}</div>
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: #1a73e8; margin-bottom: 8px;">📖 選択されたテキスト:</h3>
+          <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; border-left: 4px solid #1a73e8; font-style: italic; color: #5f6368;">
+            "${selectedText}"
+          </div>
+        </div>
+        <div>
+          <h3 style="color: #1a73e8; margin-bottom: 15px;">🎓 学習ポイント解説:</h3>
+          <div style="line-height: 1.8; color: #333;">${formattedExplanation}</div>
+        </div>
       `;
     } else {
-      contentDiv.innerHTML = `<div style="color: red;">エラー: ${response.error}</div>`;
+      contentDiv.innerHTML = `<div style="color: #d93025; padding: 15px; background: #fce8e6; border-radius: 6px; border-left: 4px solid #d93025;">❌ エラー: ${response.error}</div>`;
     }
   } catch (error) {
     contentDiv.innerHTML = `<div style="color: red;">解説の取得に失敗しました: ${error.message}</div>`;
