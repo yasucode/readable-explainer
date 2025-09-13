@@ -16,8 +16,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         apiUrlInput.value = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
     }
     
-    if (result.geminiApiKey && result.geminiApiUrl) {
+    if (result.geminiApiKey) {
         showStatus('API設定が完了しています', 'success');
+    } else {
+        showStatus('APIキーを設定してください', 'error');
     }
     
     saveButton.addEventListener('click', async function() {

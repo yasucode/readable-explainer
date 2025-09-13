@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Readable Explainer",
   "version": "1.0",
-  "description": "選択したテキストをGemini 2.5 Flashで解説するChrome拡張",
+  "description": "選択したテキストをGemini 2.0 Flashで解説するChrome拡張",
   "permissions": [
     "activeTab",
     "contextMenus",
